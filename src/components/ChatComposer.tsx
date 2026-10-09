@@ -3,9 +3,10 @@ import type { ChatRole } from '../types/chat'
 
 type ChatComposerProps = {
   onSend: (content: string, role: ChatRole) => void
+  disabled?: boolean
 }
 
-export function ChatComposer({ onSend }: ChatComposerProps) {
+export function ChatComposer({ onSend, disabled = false }: ChatComposerProps) {
   const [content, setContent] = useState('')
   const [role, setRole] = useState<ChatRole>('user')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -30,7 +31,7 @@ export function ChatComposer({ onSend }: ChatComposerProps) {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    if (!hasContent) {
+    if (disabled || !hasContent) {
       return
     }
 
@@ -49,8 +50,9 @@ export function ChatComposer({ onSend }: ChatComposerProps) {
     <form
       onSubmit={handleSubmit}
       aria-label="Enviar mensagem"
-      className={`rounded-2xl bg-white p-3 shadow-lg shadow-slate-200/60 ring-1 transition-colors ${isBotMode ? 'ring-violet-400' : 'ring-slate-200'}`}
+      className={`rounded-2xl bg-white p-3 shadow-lg shadow-slate-200/60 ring-1 transition-colors ${isBotMode ? 'ring-violet-400' : 'ring-slate-200'} ${disabled ? 'opacity-50' : ''}`}
     >
+      <fieldset disabled={disabled} className="min-w-0 border-0 p-0">
       <textarea
         ref={textareaRef}
         value={content}
@@ -99,6 +101,7 @@ export function ChatComposer({ onSend }: ChatComposerProps) {
           <span aria-hidden="true">↑</span>
         </button>
       </div>
+      </fieldset>
     </form>
   )
 }

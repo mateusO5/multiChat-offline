@@ -155,10 +155,10 @@ O tipo atual `ChatMessage` deve ser reutilizado sem perda ou alteracao dos seus 
 
 ### Fase 2: Integracao do chat
 
-5. Substituir o historico unico da aplicacao pela conversa ativa obtida da store.
-6. Direcionar envio e respostas automaticas ao ID da conversa de origem.
-7. Manter rascunho e modo do composer globais.
-8. Separar o estado vazio global do estado vazio de uma conversa.
+5. [x] Substituir o historico unico da aplicacao pela conversa ativa obtida da store.
+6. [x] Direcionar envio e respostas automaticas ao ID da conversa de origem.
+7. [x] Manter rascunho e modo do composer globais.
+8. [x] Separar o estado vazio global do estado vazio de uma conversa.
 
 ### Fase 3: Sidebar e responsividade
 
@@ -175,7 +175,7 @@ O tipo atual `ChatMessage` deve ser reutilizado sem perda ou alteracao dos seus 
 
 ## 11. Dependencias e riscos
 
-- Zustand ainda nao consta nas dependencias do projeto e precisa ser adicionado.
+- Zustand foi adicionado como dependencia na fase 1.
 - O projeto atual expoe scripts de lint e build, mas nao possui um script de testes automatizados configurado. Testes de store e componentes exigirao incluir/configurar uma infraestrutura apropriada ou validar manualmente nesta entrega.
 - Respostas assincronas podem terminar apos uma troca ou exclusao de conversa; cada resposta deve carregar o ID de origem e ser descartada se a conversa nao existir mais.
 - A coexistencia do estado global do composer com a navegacao deve ser testada para evitar perda de rascunho ou alteracao acidental da persona.
