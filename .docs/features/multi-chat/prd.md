@@ -162,10 +162,10 @@ O tipo atual `ChatMessage` deve ser reutilizado sem perda ou alteracao dos seus 
 
 ### Fase 3: Sidebar e responsividade
 
-9. Implementar a sidebar, lista ordenada, selecao e criacao de conversa.
-10. Implementar renomeacao, confirmacao de exclusao e comportamento ao excluir a conversa ativa.
-11. Implementar sidebar mobile sobreposta, botao hamburguer e interacoes de fechamento.
-12. Desabilitar o composer sem conversa ativa, incluindo interacoes por teclado.
+9. [x] Implementar a sidebar, lista ordenada, selecao e criacao de conversa.
+10. [x] Implementar renomeacao, confirmacao de exclusao e comportamento ao excluir a conversa ativa.
+11. [x] Implementar sidebar mobile sobreposta, botao hamburguer e interacoes de fechamento.
+12. [x] Desabilitar o composer sem conversa ativa, incluindo interacoes por teclado (implementado na fase 2).
 
 ### Fase 4: Validacao
 
