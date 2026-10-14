@@ -10,7 +10,7 @@ describe('useChatStore', () => {
   beforeEach(() => {
     let nextId = 1
     vi.stubGlobal('crypto', { randomUUID: () => `conversation-${nextId++}` })
-    useChatStore.setState({ conversations: {}, activeConversationId: null })
+    useChatStore.setState({ conversations: {}, activeConversationId: null, nextContactGender: 'woman' })
   })
 
   afterEach(() => {
@@ -23,6 +23,19 @@ describe('useChatStore', () => {
 
     expect(state.activeConversationId).toBe(id)
     expect(state.conversations[id]).toMatchObject({ id, messages: [], pendingResponses: 0 })
+  })
+
+  it('generates fictional phone contacts and alternates their gender', () => {
+    const { createConversation } = useChatStore.getState()
+    const firstId = createConversation()
+    const secondId = createConversation()
+    const first = useChatStore.getState().conversations[firstId]
+    const second = useChatStore.getState().conversations[secondId]
+
+    expect(first.contactNumber).toMatch(/^\(\d{2}\) 9\d{4}-\d{4}$/)
+    expect(first.contactName).toBeTruthy()
+    expect(first.contactGender).toBe('woman')
+    expect(second.contactGender).toBe('man')
   })
 
   it('keeps histories separate when switching conversations', () => {

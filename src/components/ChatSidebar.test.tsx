@@ -5,14 +5,31 @@ import { ChatSidebar } from './ChatSidebar'
 import type { ChatConversation } from '../types/conversation'
 
 const conversations: ChatConversation[] = [
-  { id: 'chat-123', messages: [], updatedAt: 2, pendingResponses: 0 },
-  { id: 'chat-456', name: 'Planejamento', messages: [], updatedAt: 1, pendingResponses: 0 },
+  {
+    id: 'internal-secret-123',
+    contactNumber: '(11) 99876-5432',
+    contactName: 'Ana Souza',
+    contactGender: 'woman',
+    messages: [{ id: 'message-1', role: 'user', content: 'Oi, tudo bem?', createdAt: 1 }],
+    updatedAt: 2,
+    pendingResponses: 0,
+  },
+  {
+    id: 'internal-secret-456',
+    contactNumber: '(21) 91234-5678',
+    contactName: 'Bruno Lima',
+    contactGender: 'man',
+    name: 'Planejamento',
+    messages: [],
+    updatedAt: 1,
+    pendingResponses: 0,
+  },
 ]
 
 function renderSidebar(isMobileOpen = false) {
   const props = {
     conversations,
-    activeConversationId: 'chat-123',
+    activeConversationId: 'internal-secret-123',
     isMobileOpen,
     onCreateConversation: vi.fn(),
     onSelectConversation: vi.fn(),
@@ -25,12 +42,21 @@ function renderSidebar(isMobileOpen = false) {
 }
 
 describe('ChatSidebar', () => {
-  it('shows full IDs, names, and the active conversation', () => {
+  it('shows phone, generated person, last message and custom name without exposing IDs', () => {
     renderSidebar()
 
-    expect(screen.getByText('chat-123')).toBeInTheDocument()
+    expect(screen.getByText('(11) 99876-5432')).toBeInTheDocument()
+    expect(screen.getByText('Ana Souza')).toBeInTheDocument()
+    expect(screen.getByText('Oi, tudo bem?')).toBeInTheDocument()
     expect(screen.getByText('Planejamento')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Selecionar conversa chat-123' })).toHaveAttribute('aria-current', 'page')
+    expect(screen.queryByText('internal-secret-123')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Selecionar conversa (11) 99876-5432' })).toHaveAttribute('aria-current', 'page')
+  })
+
+  it('does not show a message preview when a conversation has no messages', () => {
+    renderSidebar()
+
+    expect(screen.queryByText('Nenhuma mensagem ainda')).not.toBeInTheDocument()
   })
 
   it('creates a conversation through the sidebar action', async () => {
@@ -45,33 +71,33 @@ describe('ChatSidebar', () => {
     const user = userEvent.setup()
     const { props } = renderSidebar()
 
-    await user.click(screen.getByRole('button', { name: 'Renomear conversa chat-123' }))
-    const input = screen.getByRole('textbox', { name: 'Nome da conversa' })
+    await user.click(screen.getByRole('button', { name: 'Salvar contato (11) 99876-5432' }))
+    const input = screen.getByRole('textbox', { name: 'Nome salvo para o contato' })
     await user.clear(input)
     await user.type(input, '   ')
     await user.keyboard('{Enter}')
 
-    expect(props.onRenameConversation).toHaveBeenCalledWith('chat-123', '   ')
+    expect(props.onRenameConversation).toHaveBeenCalledWith('internal-secret-123', '   ')
     expect(input).toBeInTheDocument()
 
     await user.clear(input)
     await user.type(input, '  Reuniao  ')
     await user.keyboard('{Enter}')
-    expect(props.onRenameConversation).toHaveBeenLastCalledWith('chat-123', '  Reuniao  ')
-    expect(screen.queryByRole('textbox', { name: 'Nome da conversa' })).not.toBeInTheDocument()
+    expect(props.onRenameConversation).toHaveBeenLastCalledWith('internal-secret-123', '  Reuniao  ')
+    expect(screen.queryByRole('textbox', { name: 'Nome salvo para o contato' })).not.toBeInTheDocument()
   })
 
   it('requires confirmation before deleting a conversation', async () => {
     const user = userEvent.setup()
     const { props } = renderSidebar()
 
-    await user.click(screen.getByRole('button', { name: 'Excluir conversa chat-123' }))
+    await user.click(screen.getByRole('button', { name: 'Excluir conversa (11) 99876-5432' }))
     const dialog = await screen.findByRole('dialog')
     expect(within(dialog).getByText(/todo o seu histórico serão excluídos/)).toBeInTheDocument()
     expect(props.onDeleteConversation).not.toHaveBeenCalled()
 
     await user.click(within(dialog).getByRole('button', { name: 'Excluir conversa' }))
-    expect(props.onDeleteConversation).toHaveBeenCalledWith('chat-123')
+    expect(props.onDeleteConversation).toHaveBeenCalledWith('internal-secret-123')
   })
 
   it('closes the mobile drawer after selecting a conversation', async () => {
@@ -81,7 +107,7 @@ describe('ChatSidebar', () => {
     const mobileSidebar = document.getElementById('mobile-conversation-sidebar')
     expect(mobileSidebar).not.toBeNull()
     await user.click(within(mobileSidebar!).getByRole('button', { name: 'Selecionar conversa Planejamento' }))
-    expect(props.onSelectConversation).toHaveBeenCalledWith('chat-456')
+    expect(props.onSelectConversation).toHaveBeenCalledWith('internal-secret-456')
     expect(props.onCloseMobile).toHaveBeenCalledOnce()
   })
 

@@ -1,25 +1,33 @@
 import { create } from 'zustand'
 import type { ChatStore } from '../types/chatStore'
+import { generateContact } from '../services/generateContact'
 
-export const useChatStore = create<ChatStore>((set) => ({
+export const useChatStore = create<ChatStore>((set, get) => ({
   conversations: {},
   activeConversationId: null,
+  nextContactGender: 'woman',
 
   createConversation: () => {
     const id = crypto.randomUUID()
     const now = Date.now()
+    const gender = get().nextContactGender
+    const contact = generateContact(gender)
 
     set((state) => ({
       conversations: {
         ...state.conversations,
         [id]: {
           id,
+          contactNumber: contact.number,
+          contactName: contact.name,
+          contactGender: gender,
           messages: [],
           updatedAt: now,
           pendingResponses: 0,
         },
       },
       activeConversationId: id,
+      nextContactGender: gender === 'woman' ? 'man' : 'woman',
     }))
 
     return id

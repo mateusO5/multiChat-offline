@@ -21,7 +21,9 @@ A pessoa que usa o Chat Offline precisa iniciar conversas independentes, voltar 
 - Estado global com Zustand, mantido em `src/stores`.
 - Criacao de uma conversa vazia, ativada imediatamente.
 - Navegacao entre conversas por uma sidebar.
-- Identificacao por ID gerado para cada conversa; conversas renomeadas mostram o nome como rotulo principal e mantem o ID disponivel como identificador secundario.
+- Cada conversa nova recebe telefone celular brasileiro ficticio e nome de contato gerados localmente, alternando entre perfis de mulher e homem. O ID interno nao deve ser exibido na interface.
+- A lista mostra o telefone com o nome gerado abaixo; ao salvar um nome personalizado, ele substitui o telefone e o nome gerado deixa de aparecer.
+- A lista mostra uma previa da mensagem mais recente de cada conversa.
 - Renomeacao e exclusao de conversas.
 - Historico independente por conversa, preservando todos os campos existentes de `ChatMessage`.
 - Estado inicial sem conversa selecionada e sem conversas criadas.
@@ -45,7 +47,8 @@ A pessoa que usa o Chat Offline precisa iniciar conversas independentes, voltar 
 - Ao abrir ou recarregar o site, nao ha conversa ativa e os dados em memoria estao vazios.
 - Criar conversa gera um ID unico e a ativa imediatamente.
 - A lista mostra as conversas mais recentemente atualizadas primeiro. Uma nova conversa passa a ser a primeira da lista; uma conversa vai para o topo quando seu historico muda ou seu nome e atualizado.
-- Conversas sem nome exibem o ID completo. Conversas renomeadas exibem o nome e conservam o ID como informacao secundaria.
+- Conversas novas exibem telefone e nome ficticios; conversas renomeadas exibem somente o nome salvo como titulo. O ID permanece apenas interno e nunca e mostrado ao cliente.
+- A ultima mensagem de cada conversa aparece abaixo do contato; conversas sem mensagens mostram um texto indicando que ainda nao ha mensagens.
 - A renomeacao nao pode salvar um nome vazio ou composto apenas por espacos. Cancelar a edicao ou pressionar Escape descarta as alteracoes; confirmar salva o nome normalizado.
 - Excluir uma conversa requer confirmacao. Ao excluir a conversa ativa, a conversa mais recente restante e ativada; se nao houver outra, a aplicacao volta ao estado sem conversa ativa.
 - No celular, a sidebar aparece como painel sobreposto. O botao hamburguer abre e fecha o painel; selecionar uma conversa fecha o painel. Escape e clique fora tambem fecham o painel.
@@ -64,7 +67,7 @@ A sidebar deve oferecer um controle acessivel para criar conversa. Ao aciona-lo,
 
 ### RF03. Listar e selecionar conversas
 
-A sidebar deve listar as conversas em ordem decrescente de atualizacao. Cada item deve ser selecionavel por mouse e teclado, indicar claramente qual conversa esta ativa e exibir o ID (ou nome e ID secundario, se renomeada). Ao selecionar um item, a area principal deve exibir somente o historico daquela conversa.
+A sidebar deve listar as conversas em ordem decrescente de atualizacao. Cada item deve ser selecionavel por mouse e teclado, indicar claramente qual conversa esta ativa, exibir os dados do contato (sem revelar o ID interno) e a previa da mensagem mais recente. Ao selecionar um item, a area principal deve exibir somente o historico daquela conversa.
 
 ### RF04. Manter historicos independentes
 
@@ -72,7 +75,7 @@ Cada conversa deve manter sua propria lista de mensagens com todos os campos do 
 
 ### RF05. Renomear conversa
 
-A pessoa usuaria deve conseguir atribuir ou alterar o nome de uma conversa. O nome deve ser validado e o ID original deve permanecer associado a conversa. O nome salvo deve ser refletido na sidebar.
+A pessoa usuaria deve conseguir atribuir ou alterar o nome do contato pelo fluxo “Salvar contato”. O nome deve ser validado e substituir o telefone/nome ficticio visivel, sem alterar o ID interno. O nome salvo deve ser refletido na sidebar.
 
 ### RF06. Excluir conversa
 
@@ -117,7 +120,7 @@ A store deve ser apenas em memoria. Recarregar ou abrir uma nova sessao deve lim
 A store em `src/stores` deve representar, no minimo:
 
 - Colecao de conversas identificadas por ID.
-- Para cada conversa: ID, nome opcional, historico de `ChatMessage` e metadado de ultima atualizacao usado para ordenar a sidebar.
+- Para cada conversa: ID interno, telefone e nome ficticios, genero do perfil gerado, nome personalizado opcional, historico de `ChatMessage` e metadado de ultima atualizacao usado para ordenar a sidebar.
 - ID da conversa ativa, ou `null` quando nenhuma estiver selecionada.
 
 A store deve oferecer operacoes coerentes para criar, selecionar, renomear, excluir e adicionar mensagens a uma conversa especifica. Respostas assincronas devem sempre indicar a conversa de destino, evitando depender apenas da selecao ativa no momento em que terminam.
@@ -131,8 +134,8 @@ O tipo atual `ChatMessage` deve ser reutilizado sem perda ou alteracao dos seus 
 1. Ao abrir ou recarregar a aplicacao, nao ha conversa ativa ou mensagens; o composer aparece desabilitado com 50% de opacidade.
 2. Criar conversa gera um ID unico, ativa a conversa e habilita o composer.
 3. Criar varias conversas e alternar entre elas mantem os historicos separados e intactos.
-4. A sidebar ordena conversas por atualizacao mais recente, mostra o ID completo quando nao ha nome e preserva o ID como dado secundario quando ha nome.
-5. Renomear atualiza o rotulo da sidebar, nao altera o ID e impede salvar nomes vazios.
+4. A sidebar ordena conversas por atualizacao mais recente, mostra telefone e nome ficticios quando nao renomeadas, esconde o ID interno e mostra uma previa da ultima mensagem.
+5. “Salvar contato” permite definir um nome, substitui o telefone/nome ficticio visivel, nao altera o ID interno e impede salvar nomes vazios.
 6. Excluir requer confirmacao; excluir a ativa seleciona a mais recente restante, ou retorna ao estado sem conversa quando nao restam conversas.
 7. Excluir uma conversa com resposta pendente impede que a resposta seja adicionada posteriormente ou que a conversa reapareca.
 8. Uma resposta automatica iniciada em uma conversa e adicionada a essa conversa mesmo depois de alternar para outra.

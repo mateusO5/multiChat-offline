@@ -71,6 +71,8 @@ export function ChatSidebar({
           const isActive = conversation.id === activeConversationId
           const isEditing = conversation.id === editingId
           const renameInputId = `${isMobile ? 'mobile-' : ''}rename-${conversation.id}`
+          const contactLabel = conversation.name || conversation.contactNumber
+          const latestMessage = conversation.messages.at(-1)?.content
 
           return (
             <li key={conversation.id} className={`rounded-xl p-2 ${isActive ? 'bg-violet-100' : 'hover:bg-slate-100'}`}>
@@ -82,7 +84,7 @@ export function ChatSidebar({
                   }}
                   className="space-y-2"
                 >
-                  <label className="sr-only" htmlFor={renameInputId}>Nome da conversa</label>
+                  <label className="sr-only" htmlFor={renameInputId}>Nome salvo para o contato</label>
                   <input
                     id={renameInputId}
                     autoFocus
@@ -94,11 +96,11 @@ export function ChatSidebar({
                         setEditedName('')
                       }
                     }}
-                    placeholder="Nome da conversa"
+                    placeholder="Nome do contato"
                     className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
                   />
                   <div className="flex gap-2">
-                    <button type="submit" className="rounded-md bg-violet-600 px-2 py-1 text-xs font-medium text-white hover:bg-violet-700">Salvar</button>
+                    <button type="submit" className="rounded-md bg-violet-600 px-2 py-1 text-xs font-medium text-white hover:bg-violet-700">Salvar contato</button>
                     <button
                       type="button"
                       onClick={() => {
@@ -116,28 +118,33 @@ export function ChatSidebar({
                   <button
                     type="button"
                     aria-current={isActive ? 'page' : undefined}
-                    aria-label={`Selecionar conversa ${conversation.name || conversation.id}`}
+                    aria-label={`Selecionar conversa ${contactLabel}`}
                     onClick={() => {
                       onSelectConversation(conversation.id)
                       if (isMobile) onCloseMobile()
                     }}
                     className="block w-full min-w-0 rounded-lg text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-600"
                   >
-                    <span className={`block text-sm font-medium text-slate-800 ${conversation.name ? 'truncate' : 'break-all'}`}>
-                      {conversation.name || conversation.id}
+                    <span className="block truncate text-sm font-medium text-slate-800">
+                      {contactLabel}
                     </span>
-                    {conversation.name && (
-                      <span className="mt-0.5 block break-all text-xs text-slate-500">{conversation.id}</span>
+                    {!conversation.name && (
+                      <span className="mt-0.5 block truncate text-xs text-slate-500">{conversation.contactName}</span>
+                    )}
+                    {latestMessage && (
+                      <span className="mt-1 block truncate text-xs text-slate-500" title={latestMessage}>
+                        {latestMessage}
+                      </span>
                     )}
                   </button>
                   <div className="mt-1 flex gap-1">
                     <button
                       type="button"
                       onClick={() => beginRename(conversation)}
-                      aria-label={`Renomear conversa ${conversation.name || conversation.id}`}
+                      aria-label={`Salvar contato ${contactLabel}`}
                       className="rounded-md px-2 py-1 text-xs text-slate-600 hover:bg-white focus-visible:outline-2 focus-visible:outline-violet-600"
                     >
-                      Renomear
+                      Salvar contato
                     </button>
                     <button
                       ref={isActive ? deleteButtonRef : undefined}
@@ -146,7 +153,7 @@ export function ChatSidebar({
                         deleteButtonRef.current = event.currentTarget
                         setDeleteTarget(conversation)
                       }}
-                      aria-label={`Excluir conversa ${conversation.name || conversation.id}`}
+                      aria-label={`Excluir conversa ${contactLabel}`}
                       className="rounded-md px-2 py-1 text-xs text-rose-700 hover:bg-white focus-visible:outline-2 focus-visible:outline-rose-600"
                     >
                       Excluir
@@ -241,7 +248,7 @@ export function ChatSidebar({
           <div className="p-6">
             <h2 id="delete-conversation-title" className="text-lg font-semibold text-slate-900">Excluir conversa?</h2>
             <p id="delete-conversation-description" className="mt-2 break-all text-sm leading-6 text-slate-600">
-              A conversa “{deleteTarget.name || deleteTarget.id}” e todo o seu histórico serão excluídos desta sessão.
+              A conversa “{deleteTarget.name || deleteTarget.contactNumber}” e todo o seu histórico serão excluídos desta sessão.
             </p>
             <div className="mt-6 flex justify-end gap-3">
               <button

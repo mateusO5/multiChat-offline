@@ -1,9 +1,10 @@
 import type { ChatMessage } from './chat'
-import type { ChatConversation } from './conversation'
+import type { ChatConversation, ContactGender } from './conversation'
 
 export type ChatStore = {
   conversations: Record<string, ChatConversation>
   activeConversationId: string | null
+  nextContactGender: ContactGender
   createConversation: () => string
   selectConversation: (conversationId: string | null) => void
   renameConversation: (conversationId: string, name: string) => boolean
