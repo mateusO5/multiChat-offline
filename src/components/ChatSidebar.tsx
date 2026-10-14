@@ -70,6 +70,7 @@ export function ChatSidebar({
         {conversations.map((conversation) => {
           const isActive = conversation.id === activeConversationId
           const isEditing = conversation.id === editingId
+          const renameInputId = `${isMobile ? 'mobile-' : ''}rename-${conversation.id}`
 
           return (
             <li key={conversation.id} className={`rounded-xl p-2 ${isActive ? 'bg-violet-100' : 'hover:bg-slate-100'}`}>
@@ -81,9 +82,9 @@ export function ChatSidebar({
                   }}
                   className="space-y-2"
                 >
-                  <label className="sr-only" htmlFor={`rename-${conversation.id}`}>Nome da conversa</label>
+                  <label className="sr-only" htmlFor={renameInputId}>Nome da conversa</label>
                   <input
-                    id={`rename-${conversation.id}`}
+                    id={renameInputId}
                     autoFocus
                     value={editedName}
                     onChange={(event) => setEditedName(event.target.value)}
@@ -115,6 +116,7 @@ export function ChatSidebar({
                   <button
                     type="button"
                     aria-current={isActive ? 'page' : undefined}
+                    aria-label={`Selecionar conversa ${conversation.name || conversation.id}`}
                     onClick={() => {
                       onSelectConversation(conversation.id)
                       if (isMobile) onCloseMobile()

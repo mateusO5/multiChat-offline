@@ -169,13 +169,13 @@ O tipo atual `ChatMessage` deve ser reutilizado sem perda ou alteracao dos seus 
 
 ### Fase 4: Validacao
 
-13. Validar store, isolamento de historicos, atualizacoes assincronas e ciclo de vida de conversas.
-14. Validar acessibilidade e estados responsivos em larguras desktop e mobile.
-15. Executar os scripts existentes de lint e build; adicionar testes automatizados se a infraestrutura de testes do projeto for configurada.
+13. [x] Validar store, isolamento de historicos, atualizacoes assincronas e ciclo de vida de conversas.
+14. [x] Validar acessibilidade e estados responsivos em larguras desktop e mobile.
+15. [x] Executar lint e build e adicionar testes automatizados para store, sidebar e fluxos principais do app.
 
 ## 11. Dependencias e riscos
 
 - Zustand foi adicionado como dependencia na fase 1.
-- O projeto atual expoe scripts de lint e build, mas nao possui um script de testes automatizados configurado. Testes de store e componentes exigirao incluir/configurar uma infraestrutura apropriada ou validar manualmente nesta entrega.
+- Vitest, Testing Library e jsdom foram configurados para testes automatizados da store, dos controles da sidebar e dos fluxos principais da aplicacao.
 - Respostas assincronas podem terminar apos uma troca ou exclusao de conversa; cada resposta deve carregar o ID de origem e ser descartada se a conversa nao existir mais.
 - A coexistencia do estado global do composer com a navegacao deve ser testada para evitar perda de rascunho ou alteracao acidental da persona.
