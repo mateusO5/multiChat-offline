@@ -1,103 +1,102 @@
-# React + TypeScript + Vite
+# Chat Offline
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação de chat local que permite criar e alternar entre várias conversas durante a sessão. Cada conversa tem seu próprio histórico e um contato fictício. As respostas do Robô são geradas no navegador, sem backend ou chamadas a serviços externos.
 
-Currently, two official plugins are available:
+## Funcionalidades
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Criar várias conversas e alternar entre elas sem misturar os históricos.
+- Gerar para cada conversa um contato fictício com telefone brasileiro e nome. O gênero alterna entre mulher e homem a cada criação.
+- Salvar um nome personalizado para o contato; o nome salvo substitui o telefone na lista.
+- Exibir na lista a mensagem mais recente quando houver mensagens.
+- Manter o identificador interno da conversa fora da interface.
+- Exibir um estado inicial sem conversa e desabilitar o composer até uma conversa ser criada.
+- Enviar mensagens como Usuário ou Robô; mensagens do Usuário recebem resposta automática local.
+- Manter rascunho e modo do composer ao alternar conversas.
+- Continuar uma resposta pendente na conversa que a iniciou, mesmo após alternar para outra.
+- Usar sidebar fixa em telas maiores e menu sobreposto em dispositivos móveis.
+- Excluir conversas com confirmação e renomear/salvar contato.
+- Manter os dados apenas em memória: recarregar a página inicia uma sessão vazia.
+- Adaptar a interface a diferentes tamanhos de tela e permitir navegação por teclado nos controles principais.
 
-## React Compiler
+> Os nomes e telefones são dados fictícios gerados localmente. Os botões de anexo e câmera são apenas visuais e ainda não executam essas ações.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tecnologias
 
-## Expanding the ESLint configuration
+- React 19 e TypeScript
+- Vite
+- Tailwind CSS 4
+- Zustand para estado compartilhado das conversas
+- Vitest, Testing Library e jsdom para testes
+- ESLint
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Requisitos
 
-```js
-export default defineConfig([
-  # Chat Offline
+- Node.js compatível com a versão do Vite usada pelo projeto.
+- npm.
 
-  Aplicacao de chat em pagina unica feita com React, TypeScript, Vite e Tailwind CSS. O projeto simula uma conversa entre duas personas: Usuario e Robo.
+## Como executar
 
-  ## Funcionalidades
+Na pasta do projeto, instale as dependências e inicie o servidor de desenvolvimento:
 
-  - Envio de mensagens como Usuario ou Robo por meio de um toggle.
-  - Mensagens do Usuario alinhadas a direita e mensagens do Robo a esquerda.
-  - Respostas automaticas locais do Robo para mensagens enviadas como Usuario.
-  - Indicador de que o Robo esta respondendo.
-  - Historico mantido somente em memoria durante a sessao.
-  - Envio pelo botao ou pela tecla `Enter`.
-  - Quebra de linha com `Shift + Enter`.
-  - Campo de mensagem com altura ajustavel.
-  - Rolagem automatica para a mensagem mais recente.
-  - Layout responsivo para desktop e dispositivos moveis.
-  - Botoes visuais de anexo e camera, ainda sem funcionalidade.
+```bash
+npm install
+npm run dev
+```
 
-  ## Tecnologias
+Abra no navegador a URL local informada pelo Vite no terminal.
 
-  - React 19
-  - TypeScript
-  - Vite
-  - Tailwind CSS 4
-  - ESLint
+## Comandos disponíveis
 
-  ## Como executar
+| Comando | O que faz |
+| --- | --- |
+| `npm run dev` | Inicia o servidor local com atualização durante o desenvolvimento. |
+| `npm run test` | Executa os testes automatizados uma vez. |
+| `npm run lint` | Analisa o código com ESLint. |
+| `npm run build` | Verifica os tipos TypeScript e gera a versão de produção em `dist/`. |
+| `npm run preview` | Abre localmente uma prévia da versão de produção. |
 
-  Instale as dependencias:
+Antes de enviar alteracoes, rode `npm run test`, `npm run lint` e `npm run build`.
 
-  ```bash
-  npm install
-  ```
+## Estrutura do projeto
 
-  Inicie o servidor de desenvolvimento:
+```text
+src/
+  components/
+    ChatComposer.tsx          Campo para escrever e enviar mensagens
+    ChatSidebar.tsx           Lista e ações das conversas
+    EmptyState.tsx            Estado vazio de uma conversa
+    MessageBubble.tsx         Apresentação de uma mensagem
+    MessageList.tsx           Histórico da conversa ativa
+    NoConversationState.tsx   Tela sem conversa selecionada
+  services/
+    generateBotResponse.ts    Respostas locais do Robo
+    generateContact.ts        Geração local de telefone e nome fictícios
+  stores/
+    useChatStore.ts           Conversas, mensagens e seleção ativa
+  types/
+    chat.ts                   Tipos de mensagem e persona
+    chatStore.ts              Contrato da store Zustand
+    conversation.ts           Dados de conversa e contato
+  test/
+    setup.ts                  Configuração dos testes
+  App.tsx                     Composição da aplicação e fluxo de mensagens
+```
 
-  ```bash
-  npm run dev
-  ```
+Os testes de componentes e store ficam junto dos arquivos testados, com a extensão `.test.ts` ou `.test.tsx`.
 
-  Depois, abra a URL exibida pelo Vite no terminal.
+## Como funciona o chat
 
-  ## Scripts
+1. Ao abrir a aplicação, nenhuma conversa está selecionada.
+2. Escolha **Nova conversa**. A aplicação gera um contato fictício, cria uma conversa vazia e a seleciona.
+3. Escreva uma mensagem e envie pelo botão ou com `Enter`. Use `Shift + Enter` para inserir uma quebra de linha.
+4. O modo Usuário gera uma resposta automática local do Robô; o modo Robô envia uma mensagem sem disparar outra resposta automática.
+5. Use a lista lateral para trocar de conversa. Cada histórico permanece separado durante a sessão.
+6. Use **Salvar contato** para definir um nome personalizado. Esse nome passa a ser o rótulo principal no lugar do telefone.
 
-  | Comando | Descricao |
-  | --- | --- |
-  | `npm run dev` | Inicia o servidor de desenvolvimento com HMR. |
-  | `npm run build` | Verifica os tipos e gera o build de producao. |
-  | `npm run lint` | Executa o ESLint. |
-  | `npm run preview` | Serve localmente o build de producao. |
+## Dados e privacidade
 
-  ## Estrutura principal
+O aplicativo não usa servidor, banco de dados, login ou API externa. Conversas, mensagens e contatos existem somente na memória da aba e desaparecem quando a página é recarregada ou fechada. O ID usado internamente para identificar cada conversa não é mostrado na interface.
 
-  ```text
-  src/
-    components/                 Componentes visuais do chat
-      ChatComposer.tsx          Campo de mensagem e controles
-      EmptyState.tsx            Estado inicial sem mensagens
-      MessageBubble.tsx         Bolha individual de mensagem
-      MessageList.tsx           Lista do historico
-    services/
-      generateBotResponse.ts    Gerador local de respostas
-    types/
-      chat.ts                   Tipos das mensagens e personas
-    App.tsx                     Estado e composicao principal
-    index.css                   Estilos globais
-  ```
+## Documentação
 
-  ## Comportamento offline
-
-  As respostas do Robo sao geradas no navegador por regras simples e deterministicas. A aplicacao nao usa backend, API externa ou banco de dados.
-
-  O historico e perdido ao recarregar a pagina. Os controles de anexo e camera estao presentes apenas na interface e nao realizam upload ou captura neste momento.
-
-  ## Validacao
-
-  Antes de finalizar alteracoes, execute:
-
-  ```bash
-  npm run lint
-  npm run build
-  ```
-
-  O plano detalhado de implementacao e os criterios de aceite estao em [`.docs/prd.md`](.docs/prd.md).
+O [PRD da funcionalidade de conversas múltiplas](.docs/features/multi-chat/prd.md) descreve requisitos, critérios de aceite e fases de implementação.
