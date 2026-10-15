@@ -1,4 +1,4 @@
-# Chat Offline
+# MultiChat-Offline
 
 Aplicação de chat local que permite criar e alternar entre várias conversas durante a sessão. Cada conversa tem seu próprio histórico e um contato fictício. As respostas do Robô são geradas no navegador, sem backend ou chamadas a serviços externos.
 
